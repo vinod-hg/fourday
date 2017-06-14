@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"time"
+
 	"github.com/gorilla/rpc"
 	"github.com/gorilla/rpc/json"
 )
@@ -19,7 +21,8 @@ func main() {
 	s := rpc.NewServer()
 	s.RegisterCodec(json.NewCodec(), "application/json")
 	s.RegisterService(new(HelloService), "")
-	http.Handle("/rpc", s)
+	http.Handle("/rpc/timeout/deadline", s)
 	fmt.Println("Listening")
+	time.Sleep(20 * time.Second)
 	http.ListenAndServe(":1234", nil)
 }

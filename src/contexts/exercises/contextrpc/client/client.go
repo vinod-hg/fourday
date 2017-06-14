@@ -5,13 +5,14 @@ import (
 	"contexts/exercises/contextrpc"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/rpc/json"
 )
 
 func main() {
 
-	url := "http://localhost:1234/rpc"
+	url := "http://localhost:1234/rpc/timeout/deadline"
 	args := &contextrpc.HelloArgs{
 		Who: "Gopher",
 	}
@@ -25,6 +26,7 @@ func main() {
 	}
 	req.Header.Set("Content-Type", "application/json")
 	client := new(http.Client)
+	client.Timeout = 1 * time.Second
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatalf("Error in sending request to %s. %s", url, err)

@@ -24,6 +24,12 @@ type admin struct {
 	level string
 }
 
+func (a *admin) notify() {
+	fmt.Printf("Sending admin email To %s<%s>\n",
+		a.name,
+		a.email)
+}
+
 // main is the entry point for the application.
 func main() {
 	// Create an admin user.

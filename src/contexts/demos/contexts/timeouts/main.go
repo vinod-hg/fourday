@@ -15,37 +15,39 @@ type Result struct {
 func main() {
 	// launch 10k goroutines, trying to get random
 	// to return "150"
-	timeout, cf := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cf()
-	result := Random(timeout, 150, 10)
+	timeout, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	//defer cf()
+	result := Random(timeout, 150, 10000)
 	if result.Err != nil {
 		fmt.Println("error:", result.Err)
 	}
 	fmt.Println(result.Value)
-
 }
 
+func search(ctx context.Context, target int, c chan Result) {
+	sleep := time.Duration(rand.Intn(10))
+	select {
+	case <-ctx.Done():
+		fmt.Printf("-")
+		return
+	case <-time.After(sleep):
+		r := rand.Intn(1000)
+		if r == target {
+			c <- Result{Value: r}
+			return
+		}
+		fmt.Printf(".")
+	}
+}
+
+// Random function
 func Random(ctx context.Context, target, count int) Result {
 	rand.Seed(82)
 	c := make(chan Result, count)
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	search := func(target int) {
-		sleep := time.Duration(rand.Intn(10))
-		select {
-		case <-ctx.Done():
-			return
-		case <-time.After(sleep):
-			r := rand.Intn(1000)
-			if r == target {
-				c <- Result{Value: r}
-				return
-			}
-			fmt.Printf(".")
-		}
-	}
+	ctx, _ = context.WithCancel(ctx)
+	//defer cancel()
 	for i := 0; i < count; i++ {
-		go search(target)
+		go search(ctx, target, c)
 	}
 	select {
 	case <-ctx.Done():
