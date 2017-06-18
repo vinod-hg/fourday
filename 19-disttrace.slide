@@ -43,6 +43,7 @@ In a distributed system, it's more challenging to uniquely identify a request be
 Examples:
 - Snowflake -Twitter
 - Noeqd -Heroku
+- Kusid -Sengment
 
 These services require very specific care when you're setting them up. Misconfiguration will cause collisions.
 

@@ -1,2 +1,11 @@
 **/.DS_Store
 .idea
+bin/*
+src/github.com
+src/golang.org
+src/google.golang.org
+pkg/*
+src/sourcegraph.com
+*.out
+*.test
+*.profile
